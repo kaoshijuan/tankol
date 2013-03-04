@@ -48,7 +48,7 @@
      <Compile Include="Assets\JSCode\EnemyTank.js" />
      <Compile Include="Assets\JSCode\EnemyTankbak.js" />
      <Compile Include="Assets\JSCode\GameControl.js" />
-     <Compile Include="Assets\JSCode\MyTank.js" />
+     <Compile Include="Assets\JSCode\PlayerTank.js" />
      <Compile Include="Assets\Standard Assets (Mobile)\Scripts\CameraRelativeControl.js" />
      <Compile Include="Assets\Standard Assets (Mobile)\Scripts\FirstPersonControl.js" />
      <Compile Include="Assets\Standard Assets (Mobile)\Scripts\FollowTransform.js" />

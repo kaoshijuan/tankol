@@ -72,7 +72,7 @@ public class NetManager:MonoBehaviour{
 	public void Fire(int m_id,Vector3 pos, Quaternion rotation, Vector3 speed)
 	{
 		byte []abyBuffer = new byte[1024];
-		Debug.Log (m_id);
+		
 		int index = 0;
 		Array.Copy(System.BitConverter.GetBytes((int)0),0,abyBuffer,index,sizeof(int));//Len
 		index += sizeof(int);
@@ -122,8 +122,11 @@ public class NetManager:MonoBehaviour{
 	
 	public void GetResponse()
 	{
-		//Callback callback= this.GetComponent("Callback") as Callback;
-		//callback.OnLoingResponse();
+		if(m_stTCPConn.CheckConn() == false)
+		{
+			SendMessage("OnClose");
+			return;
+		}
 		
 		byte [] abyBuffer = null;
 		uint uiLen = 0;

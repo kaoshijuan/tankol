@@ -6,23 +6,14 @@ var lastCheck = 0;
 var FirePoint:Transform;
 var Bullet:Rigidbody;
 var m_id = 0;
+private var m_sName = "";
+private var lastUpdateTime = 0;
+
 function OnCollisionEnter(obj:Collision)
 {
-	//Debug.Log(obj.gameObject.name);
 		
 	if(obj.gameObject.tag == "Bullet")
 	{
-		
-/*		var t:float = Random.Range(0.0,1.0);
-		if(t>0.7 || status == 1 )
-		{//dead
-			Invoke("DestroyNow",0.2);
-			Destruct(this.gameObject);
-		}else{
-			status = 1;
-						
-		}
-*/
 		DestroyNow();
 	}
 }
@@ -34,23 +25,48 @@ function DestroyNow ()
 	
 }
 
+function Init(tankmodel:TankModel)
+{
+	this.transform.eulerAngles = tankmodel.m_eulerAngle;
+	this.transform.rigidbody.velocity = tankmodel.m_velocity;
+	this.m_id = tankmodel.m_id;
+}
+
 function Start()
 {
-	
+	lastUpdateTime = Time.realtimeSinceStartup;
 }
 
 function Update()
 {
 
-
+	CheckTimer();
 }
 
 function CheckTimer()
 {
 	if (Time.realtimeSinceStartup - lastCheck > 2)
 	{
-		
-
 		lastCheck = Time.realtimeSinceStartup;
 	}
+	
+	if(Time.realtimeSinceStartup - lastUpdateTime > 3 )
+	{//3秒没更新数据，清呆
+		DestroyNow();
+	}
+}
+
+function UpdateStatus(tankmodel:TankModel)
+{
+	lastUpdateTime = Time.realtimeSinceStartup;
+	
+	this.transform.eulerAngles = tankmodel.m_eulerAngle;
+	this.rigidbody.velocity.x = (tankmodel.m_pos.x - this.rigidbody.position.x)/0.5;
+	this.rigidbody.velocity.y = (tankmodel.m_pos.y - this.rigidbody.position.y)/0.5;
+	this.rigidbody.velocity.z = (tankmodel.m_pos.z - this.rigidbody.position.z)/0.5;
+}
+
+function SetName(name:String)
+{
+	m_sName = name;
 }

@@ -16,37 +16,38 @@ public class CTCPConn{
 	public uint SendOneCode(byte [] code, uint iLen)
 	{
 		if(!m_stClient.Connected){
-			Debug.LogError("Reconnect...");
-			m_stClient = new TcpClient(m_sIPAddr,m_iPort);
+			Debug.LogError("Connected failed");
+			//m_stClient = new TcpClient(m_sIPAddr,m_iPort);
+			return 0;
 		}
 		byte [] tmpcode = new byte[iLen];
 		Array.Copy(code,tmpcode,iLen);
 		NetworkStream stream  = m_stClient.GetStream();
 		stream.Write(tmpcode,0,(int)iLen);
-		//stream.Flush();
 		return iLen;
 	}
 	
 		
 	public uint GetOneCode(ref byte[] code, ref uint iCodeLen)
 	{
+		
 		if(m_iStartIndex >= m_iEndIndex)
 		{
 			return 0;
 		}
 			
-		uint iLen = System.BitConverter.ToUInt32(m_abyReadBuffer,(int)m_iStartIndex);
-		if(iLen + m_iStartIndex > m_iEndIndex)
+		uint uiLen = System.BitConverter.ToUInt32(m_abyReadBuffer,(int)m_iStartIndex);
+		if(uiLen + m_iStartIndex > m_iEndIndex)
 		{// code not complete ,still waiting for reading
 			iCodeLen = 0;
 			return 0;
 		}
 		
-		code = new byte[iLen];
-		Array.Copy(m_abyReadBuffer,m_iStartIndex,code,0,iLen);
-		iCodeLen =  iLen;
-		m_iStartIndex += iLen;
-		return iLen;
+		code = new byte[uiLen];
+		Array.Copy(m_abyReadBuffer,m_iStartIndex,code,0,uiLen);
+		iCodeLen =  uiLen;
+		m_iStartIndex += uiLen;
+		return uiLen;
 	}
 	
 	public int ConnectTo(string sIPAddr, int iPort)
