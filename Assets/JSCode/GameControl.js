@@ -194,9 +194,14 @@ function UpdateTank(tankmodel:TankModel)
 			if(enemyTank.m_id == tankmodel.m_id)
 			{
 				//Debug.Log('update '+tankmodel.m_id);
-				l.transform.position = tankmodel.m_pos;
+				/*l.transform.position = tankmodel.m_pos;
 				l.transform.eulerAngles = tankmodel.m_eulerAngle;
-				l.rigidbody.velocity = tankmodel.m_velocity;
+				l.rigidbody.velocity = tankmodel.m_velocity;*/
+				l.transform.eulerAngles = tankmodel.m_eulerAngle;
+				//l.rigidbody.velocity = tankmodel.m_velocity;
+				l.rigidbody.velocity.x = (tankmodel.m_pos.x - l.rigidbody.position.x)/0.5;
+				l.rigidbody.velocity.y = (tankmodel.m_pos.y - l.rigidbody.position.y)/0.5;
+				l.rigidbody.velocity.z = (tankmodel.m_pos.z - l.rigidbody.position.z)/0.5;
 				result = true;//found
 			}
 		}
