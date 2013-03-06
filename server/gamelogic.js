@@ -1,4 +1,68 @@
+exports.GameLogic = function()
+{
+  this.m_playerList = {};
+}
 
+exports.GameLogic.prototype.OnMsg = function (msg)
+{
+  var cmdID = msg.m_cmdID;
+  switch(cmdID)
+  {
+    case 1:
+      ProcessOnLogin(msg);
+      break;
+    case 2:
+      ProcessUpdatePositionVelocity(msg);
+      break;
+    case 3:
+      ProcessFire(msg);
+      break;
+  }
+}
+
+
+exports.GameLogic.prototype.ProcessOnLogin = function(msg)
+{
+  var uid = msg.m_uid;
+  var player = FindPlayerByUid(uid);
+  if(player == null)
+  {
+    player = CreatePlayer(uid);
+  }
+
+}
+
+exports.GameLogic.prototype.FindPlayerByUid(uid)
+{
+  return this.m_playerList[uid.toString()];
+}
+
+exports.GameLogic.prototype.CreatePlayer(uid)
+{
+  var player = {};
+  player.m_pos = {};
+  player.m_velocity = {};
+  player.m_eulerAngle = {};
+
+  player.m_pos.x = Math.random() * 100 + 50;
+  player.m_pos.y = 2;//Math.random() * 1;
+  player.m_pos.z = Math.random() * 100 + 50;
+
+  player.m_velocity.x = model.m_velocity.y = model.m_velocity.z = 0;
+
+  player.m_eulerAngle.x = model.m_eulerAngle.z = 0;
+  player.m_eulerAngle.y = Math.random() * 360;
+
+  //to be do
+
+  return player;
+
+}
+
+exports.GameLogic.prototype.ProcessUpdatePositionVelocity = function(msg)
+{
+
+}
 
 var tanks = [];
 
