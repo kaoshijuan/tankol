@@ -1,8 +1,25 @@
 var net = require('net');
 var PORT = 80;
-var gamelogic = require('./gamelogic.js');
+//var gamelogic = require('./gamelogic.js');
+
+var client_manager =  new require('./clientmanager.js').CLientManger();
 
 
+net.createServer(function(socket){
+  
+  client_manager.OnConnect(socket);
+
+  socket.on('data',function(data){
+    client_manager.OnData(socket,data);
+  });
+  
+  socket.on('close',function(data){
+    client_manager.OnClose();
+  });
+
+}).listen(80,'0.0.0.0');
+
+/*
 var star_index = end_index = 0;
 
 var client_list = {};
@@ -134,4 +151,4 @@ net.createServer(function(socket){
 
 
 setInterval(gamelogic.onTimer,5000);
-
+*/
