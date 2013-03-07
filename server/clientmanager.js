@@ -5,8 +5,7 @@ var gameLogic = new GameLogic();
 exports.ClientManager = function()
 {
 	this.socketList = {};
-	this.UidToSock = {};
-	this.SockToUid = {};
+
 
 	gameLogic.m_clientMananger = this;
 }
@@ -38,7 +37,7 @@ exports.ClientManager.prototype.OnData = function(socket,data)
 		return;
 	}
 
-	var client = socketList[key];
+	var client = this.socketList[key];
 	if(client.buffer == null)
 	{
 		client.buffer = data;
@@ -60,7 +59,7 @@ exports.ClientManager.prototype.OnData = function(socket,data)
 		buf.copy(new_buf,0,4,len);
 
 		//onmsg
-		var msg = new Msg(data);
+		var msg = new Msg(new_buf);
 		
 		msg.m_sockKey = key;
 		gameLogic.OnMsg(msg);
@@ -82,13 +81,13 @@ exports.ClientManager.prototype.OnData = function(socket,data)
 exports.ClientManager.prototype.SendData = function (msg)
 {
 	var sockKey = msg.m_sockKey;
-	var socket = this.socketList[sockKey];
+	var socket = this.socketList[sockKey].socket;
 	if(socket != null && socket != undefined)
 	{
 		var data = msg.Encode();
 		var buff = new Buffer(4);
 		buff.writeInt32LE(data.length+4,0);
-		socket.write(Buff.concat([buff,data]));
+		socket.write(Buffer.concat([buff,data]));
 	}
 }
 

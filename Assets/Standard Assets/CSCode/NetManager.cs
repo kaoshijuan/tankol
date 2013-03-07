@@ -18,7 +18,8 @@ public class NetManager:MonoBehaviour{
 	public int Init()
 	{
 		m_stTCPConn = new CTCPConn();
-		int iResult = m_stTCPConn.ConnectTo("172.25.42.46",80);
+		//int iResult = m_stTCPConn.ConnectTo("172.25.42.46",80);
+		int iResult = m_stTCPConn.ConnectTo("42.96.139.24",80);
 		return iResult;	
 	}
 	public void SendData(byte [] buffer)
@@ -26,7 +27,7 @@ public class NetManager:MonoBehaviour{
 		byte []abyBuffer = new byte[1024];
 		Array.Copy(System.BitConverter.GetBytes((int)buffer.GetLength(0) + 4),0,abyBuffer,0,sizeof(int));//Len
 		Array.Copy(buffer,0,abyBuffer,4,buffer.GetLength(0));
-		m_stTCPConn.SendOneCode(abyBuffer,abyBuffer.GetLength(0));	
+		m_stTCPConn.SendOneCode(abyBuffer,(uint)buffer.GetLength(0) + 4);	
 	}
 	/*
 	public void Login()
@@ -143,7 +144,7 @@ public class NetManager:MonoBehaviour{
 		if(uiRet > 0)
 		{
 			byte [] temp = new byte [uiLen - 4];
-			abyBuffer.CopyTo(temp,4);
+			Array.Copy(abyBuffer,4,temp,0,uiLen-4);
 			ProcessMsg(temp,uiLen);
 		}
 		return;

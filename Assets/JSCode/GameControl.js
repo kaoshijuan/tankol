@@ -23,7 +23,7 @@ function Start () {
 
 function Login()
 {
-	var msg = {'m_uid':'ttrr','m_cmdID':1};
+	var msg = '{"m_uid":"ttrr","m_cmdID":1}';
 	
 	SendData(msg);
 }
@@ -68,9 +68,8 @@ function OnMsg(abyBuffer)
 	
 	var str = System.Text.Encoding.UTF8.GetString(abyBuffer);
 	
-	//var msg:Boo.Lang.Hash = eval(str);
-	var msg;
-	var cmdID = msg['m_cmdID'];
+	var msg:json = json.fromString(str);
+	var cmdID = 0;
 	switch(cmdID)
 	{
 		case 101:
@@ -88,10 +87,10 @@ function OnMsg(abyBuffer)
 	
 }
 
-function OnLoginResponse(msg : Boo.Lang.Hash)
+function OnLoginResponse(msg: json)
 {
-	var uid = msg['m_uid'];
-/*	var myTankID = System.BitConverter.ToInt32(abyBuffer,8);
+/*	var uid = msg['m_uid'];
+	var myTankID = System.BitConverter.ToInt32(abyBuffer,8);
 	Debug.Log('OnLoginResponse, my tank id : ' + myTankID);
 	m_id = myTankID;
 	

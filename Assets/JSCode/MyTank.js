@@ -128,12 +128,12 @@ function CheckTimer()
 function UpdatePosVelocity()
 {
 	var netManager:NetManager = GameObject.FindGameObjectWithTag('GameController').GetComponent("NetManager") as NetManager;
-	netManager.UpdatePosVelocity(m_id,this.rigidbody.transform.position,this.rigidbody.transform.eulerAngles,this.rigidbody.velocity);
+//	netManager.UpdatePosVelocity(m_id,this.rigidbody.transform.position,this.rigidbody.transform.eulerAngles,this.rigidbody.velocity);
 
 }
 
 function Fire(pos:Vector3, rotation:Quaternion, speed:Vector3)
 {
 	var netManager:NetManager = GameObject.FindGameObjectWithTag('GameController').GetComponent("NetManager") as NetManager;
-	netManager.Fire(m_id,pos,rotation,speed);
+//	netManager.Fire(m_id,pos,rotation,speed);
 }

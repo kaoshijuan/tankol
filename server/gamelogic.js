@@ -1,4 +1,5 @@
 var Player = require('./player.js').Player;
+var Msg = require('./protocol.js').Msg;
 
 exports.GameLogic = function()
 {
@@ -11,13 +12,13 @@ exports.GameLogic.prototype.OnMsg = function (msg)
   switch(cmdID)
   {
     case 1:
-      ProcessOnLogin(msg);
+      this.ProcessOnLogin(msg);
       break;
     case 2:
-      ProcessUpdatePositionVelocity(msg);
+      this.ProcessUpdatePositionVelocity(msg);
       break;
     case 3:
-      ProcessFire(msg);
+      this.ProcessFire(msg);
       break;
   }
 }
@@ -26,13 +27,13 @@ exports.GameLogic.prototype.OnMsg = function (msg)
 exports.GameLogic.prototype.ProcessOnLogin = function(msg)
 {
   var uid = msg.m_uid;
-  var player = FindPlayerByUid(uid);
+  var player = this.FindPlayerByUid(uid);
   if(player == null)
   {
-    player = CreatePlayer(uid,msg.m_sockKey);
+    player = this.CreatePlayer(uid,msg.m_sockKey);
   }else{
     //multi login...
-
+    this.player.m_sockKey = msg.m_sockKey;
   }
 
   player.FetchData();
@@ -41,14 +42,23 @@ exports.GameLogic.prototype.ProcessOnLogin = function(msg)
   responseMsg.m_uid = uid;
   responseMsg.m_sockKey = player.m_sockKey;
   responseMsg.m_cmdID = 101;
-  responseMsg.m_playerList = this.m_playerList;
+  responseMsg.m_playerList = this.GetPlayerListData();
   this.m_clientMananger.SendData(responseMsg);
+}
+
+exports.GameLogic.prototype.GetPlayerListData = function()
+{
+  var data = {};
+  for (var l in this.m_playerList)
+  {
+    // to be done
+  }
 }
 
 exports.GameLogic.prototype.ProcessUpdatePositionVelocity = function(msg)
 {
   var uid = msg.m_uid;
-  var player = FindPlayerByUid(uid);
+  var player = this.FindPlayerByUid(uid);
 }
 
 exports.GameLogic.prototype.FindPlayerByUid = function(uid)
@@ -69,7 +79,7 @@ exports.GameLogic.prototype.CreatePlayer = function(uid,sockKey)
 exports.GameLogic.prototype.ProcessUpdatePositionVelocity = function(msg)
 {
   var uid = msg.m_uid;
-  var player = FindPlayerByUid(uid);
+  var player = this.FindPlayerByUid(uid);
   if(player !== null && player !== undefined)
   {
     player.Update(msg);
