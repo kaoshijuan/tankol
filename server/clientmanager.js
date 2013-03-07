@@ -5,11 +5,16 @@ var gameLogic = new GameLogic();
 exports.ClientManager = function()
 {
 	this.socketList = {};
+	this.UidToSock = {};
+	this.SockToUid = {};
+
+	gameLogic.m_clientMananger = this;
 }
 
 exports.ClientManager.prototype.OnConnect = function (socket)
 {
 	var key  = socket.remoteAddress+':'+socket.remotePort;
+	this.socketList[key] = {};
 	this.socketList[key].socket = socket;
 	this.socketList[key].buffer = null;
 }
@@ -18,7 +23,8 @@ exports.ClientManager.prototype.OnClose = function (socket)
 {
 	var key  = socket.remoteAddress+':'+socket.remotePort;
 
-	delete this.playerList[key];
+	delete this.socketList[key];
+	
 
 }
 
@@ -54,9 +60,11 @@ exports.ClientManager.prototype.OnData = function(socket,data)
 		buf.copy(new_buf,0,4,len);
 
 		//onmsg
-		var uid  = key;
-		var msg = new Msg(key,uid,data);
+		var msg = new Msg(data);
+		
+		msg.m_sockKey = key;
 		gameLogic.OnMsg(msg);
+		var uid = msg.m_uid;
 
 		if(len == buf.length)
 		{
@@ -70,4 +78,17 @@ exports.ClientManager.prototype.OnData = function(socket,data)
 
 }
 
+
+exports.ClientManager.prototype.SendData = function (msg)
+{
+	var sockKey = msg.m_sockKey;
+	var socket = this.socketList[sockKey];
+	if(socket != null && socket != undefined)
+	{
+		var data = msg.Encode();
+		var buff = new Buffer(4);
+		buff.writeInt32LE(data.length+4,0);
+		socket.write(Buff.concat([buff,data]));
+	}
+}
 

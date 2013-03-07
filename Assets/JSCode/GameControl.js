@@ -1,5 +1,3 @@
-#pragma strict
-
 
 
 public var playerPre:PlayerTank;
@@ -9,6 +7,7 @@ public var bulletPre:Rigidbody;
 private var lastCheck = 0;
 private var m_id = 0;
 private var connected_fail = false;
+
 function Start () {
 
 	var netManager = GetComponent("NetManager") as NetManager;
@@ -17,8 +16,25 @@ function Start () {
 		Debug.LogError('net mananger init failed');
 		connected_fail = true;
 	}else{
-		netManager.Login();
+//		netManager.Login();
+		Login();
 	}
+}
+
+function Login()
+{
+	var msg = {'m_uid':'ttrr','m_cmdID':1};
+	
+	SendData(msg);
+}
+
+function SendData(msg)
+{
+	var str = msg.ToString();
+	var abyBuffer = System.Text.Encoding.UTF8.GetBytes(str);
+	
+	var netManager = GetComponent("NetManager") as NetManager;
+	netManager.SendData(abyBuffer);
 }
 
 function OnClose()
@@ -48,19 +64,23 @@ function CheckTimer()
 function OnMsg(abyBuffer)
 {
 	
-
-	var cmd = System.BitConverter.ToInt32(abyBuffer,4);
-
-	switch(cmd) 
+	
+	
+	var str = System.Text.Encoding.UTF8.GetString(abyBuffer);
+	
+	//var msg:Boo.Lang.Hash = eval(str);
+	var msg;
+	var cmdID = msg['m_cmdID'];
+	switch(cmdID)
 	{
 		case 101:
-			OnLoginResponse(abyBuffer);
+			OnLoginResponse(msg);
 			break;
 		case 102:
-			OnBroadCastStatus(abyBuffer);
+			OnBroadCastStatus(msg);
 			break;
 		case 103:
-			OnBroadCastFire(abyBuffer);
+			OnBroadCastFire(msg);
 			break;
 		default:
 			break;
@@ -68,9 +88,10 @@ function OnMsg(abyBuffer)
 	
 }
 
-function OnLoginResponse(abyBuffer)
+function OnLoginResponse(msg : Boo.Lang.Hash)
 {
-	var myTankID = System.BitConverter.ToInt32(abyBuffer,8);
+	var uid = msg['m_uid'];
+/*	var myTankID = System.BitConverter.ToInt32(abyBuffer,8);
 	Debug.Log('OnLoginResponse, my tank id : ' + myTankID);
 	m_id = myTankID;
 	
@@ -83,7 +104,7 @@ function OnLoginResponse(abyBuffer)
 		var t:TankModel = new TankModel();
 		index += t.Decode(abyBuffer,index);
 		CreateTank(t,myTankID);
-	} 
+	}*/ 
 }
 
 function OnBroadCastStatus(abyBuffer)

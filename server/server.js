@@ -1,8 +1,8 @@
 var net = require('net');
 var PORT = 80;
-//var gamelogic = require('./gamelogic.js');
 
-var client_manager =  new require('./clientmanager.js').CLientManger();
+var CM = require('./clientmanager.js').ClientManager;
+var client_manager =  new CM();
 
 
 net.createServer(function(socket){
@@ -14,7 +14,7 @@ net.createServer(function(socket){
   });
   
   socket.on('close',function(data){
-    client_manager.OnClose();
+    client_manager.OnClose(socket);
   });
 
 }).listen(80,'0.0.0.0');

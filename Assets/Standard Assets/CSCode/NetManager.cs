@@ -21,6 +21,14 @@ public class NetManager:MonoBehaviour{
 		int iResult = m_stTCPConn.ConnectTo("172.25.42.46",80);
 		return iResult;	
 	}
+	public void SendData(byte [] buffer)
+	{
+		byte []abyBuffer = new byte[1024];
+		Array.Copy(System.BitConverter.GetBytes((int)buffer.GetLength(0) + 4),0,abyBuffer,0,sizeof(int));//Len
+		Array.Copy(buffer,0,abyBuffer,4,buffer.GetLength(0));
+		m_stTCPConn.SendOneCode(abyBuffer,abyBuffer.GetLength(0));	
+	}
+	/*
 	public void Login()
 	{
 		byte []abyBuffer = new byte[8];
@@ -119,7 +127,7 @@ public class NetManager:MonoBehaviour{
 	{
 		
 	}
-	
+	*/
 	public void GetResponse()
 	{
 		if(m_stTCPConn.CheckConn() == false)
@@ -134,8 +142,9 @@ public class NetManager:MonoBehaviour{
 		uiRet = m_stTCPConn.GetOneCode(ref abyBuffer,ref uiLen);
 		if(uiRet > 0)
 		{
-			//
-			ProcessMsg(abyBuffer,uiLen);
+			byte [] temp = new byte [uiLen - 4];
+			abyBuffer.CopyTo(temp,4);
+			ProcessMsg(temp,uiLen);
 		}
 		return;
 	}
