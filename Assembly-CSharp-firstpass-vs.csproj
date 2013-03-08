@@ -44,6 +44,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Standard Assets\CSCode\GameGUI.cs" />
      <Compile Include="Assets\Standard Assets\CSCode\NetManager.cs" />
      <Compile Include="Assets\Standard Assets\CSCode\TankModel.cs" />
      <Compile Include="Assets\Standard Assets\CSCode\TcpConn.cs" />

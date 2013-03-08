@@ -6,7 +6,7 @@ var lastCheck = 0;
 var FirePoint:Transform;
 var Bullet:Rigidbody;
 var m_uid = '';
-private var m_sName = "";
+private var m_name = "";
 private var lastUpdateTime = 0;
 
 function OnCollisionEnter(obj:Collision)
@@ -30,6 +30,7 @@ function Init(tankmodel:TankModel)
 	this.transform.eulerAngles = tankmodel.m_eulerAngle;
 	this.transform.rigidbody.velocity = tankmodel.m_velocity;
 	this.m_uid = tankmodel.m_uid;
+	this.m_name = tankmodel.m_name;
 }
 
 function Start()
@@ -43,6 +44,15 @@ function Update()
 	CheckTimer();
 }
 
+function OnGUI()
+{
+	var camTransform = Camera.main.transform;
+	var screenPos : Vector3 = Camera.main.WorldToScreenPoint(this.transform.position);
+	if(screenPos.z > 0)
+	{
+		GUI.Box(Rect(screenPos.x - 25,Screen.height - screenPos.y - 30,50,20),this.m_name);
+	}
+}
 function CheckTimer()
 {
 	if (Time.realtimeSinceStartup - lastCheck > 2)
@@ -66,7 +76,3 @@ function UpdateStatus(tankmodel:TankModel)
 	this.rigidbody.velocity.z = (tankmodel.m_pos.z - this.rigidbody.position.z)/0.5;
 }
 
-function SetName(name:String)
-{
-	m_sName = name;
-}

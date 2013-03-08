@@ -5,19 +5,23 @@ public var enemyPre:EnemyTank;
 public var bulletPre:Rigidbody;
 
 private var lastCheck = 0;
-private var m_uid = 'hello2';
+private var m_uid = 'hello';
+private var m_name = 'hello';
 private var connected_fail = false;
+private var gameGUI : GameGUI;
 
 function Start () {
-
+	var gameGUIObject : GameObject = GameObject.Find("GameGUI");
+	gameGUI = gameGUIObject.GetComponent(GameGUI);
+	m_uid = gameGUI.m_userName;
+	m_name = m_uid;
 	var netManager = GetComponent("NetManager") as NetManager;
 	if(netManager.Init()<0)
 	{
 		Debug.LogError('net mananger init failed');
 		connected_fail = true;
 	}else{
-		netManager.Login('hello2','world');
-//		Login();
+		netManager.Login(m_uid,m_name);
 	}
 }
 
