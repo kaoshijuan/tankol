@@ -20,9 +20,20 @@ exports.GameLogic.prototype.OnMsg = function (msg)
     case 3:
       this.ProcessFire(msg);
       break;
+    case 5:
+      this.ProcessExit(msg);
   }
 }
 
+exports.GameLogic.prototype.ProcessExit = function(msg)
+{
+  var uid = msg.m_uid;
+  if(this.m_playerList[uid])
+  {
+    console.log('remove user: ' + uid);
+    delete this.m_playerList[uid];
+  }
+}
 
 exports.GameLogic.prototype.ProcessOnLogin = function(msg)
 {
@@ -33,10 +44,11 @@ exports.GameLogic.prototype.ProcessOnLogin = function(msg)
     player = this.CreatePlayer(uid,msg.m_sockKey);
   }else{
     //multi login...
-    this.player.m_sockKey = msg.m_sockKey;
+    player.m_sockKey = msg.m_sockKey;
   }
 
   player.FetchData();
+  player.m_name = msg.m_name;
 
   var responseMsg = new Msg();
   responseMsg.m_uid = uid;
@@ -48,18 +60,9 @@ exports.GameLogic.prototype.ProcessOnLogin = function(msg)
 
 exports.GameLogic.prototype.GetPlayerListData = function()
 {
-  var data = {};
-  for (var l in this.m_playerList)
-  {
-    // to be done
-  }
+  return this.m_playerList;
 }
 
-exports.GameLogic.prototype.ProcessUpdatePositionVelocity = function(msg)
-{
-  var uid = msg.m_uid;
-  var player = this.FindPlayerByUid(uid);
-}
 
 exports.GameLogic.prototype.FindPlayerByUid = function(uid)
 {
@@ -89,12 +92,13 @@ exports.GameLogic.prototype.ProcessUpdatePositionVelocity = function(msg)
 exports.GameLogic.prototype.ProcessFire = function (msg)
 {
   var uid = msg.m_uid;
-  for (var player in this.m_playerList)
+  for (var l in this.m_playerList)
   {
-    if(player.m_uid != uid)
+    var player = this.m_playerList[l];
+    if(player && player.m_uid != uid)
     {
       msg.m_cmdID = 103;
-      msg.m_sockKey = player.sockKey;
+      msg.m_sockKey = player.m_sockKey;
       this.m_clientMananger.SendData(msg);
     }
   }
@@ -102,15 +106,19 @@ exports.GameLogic.prototype.ProcessFire = function (msg)
 
 
 
-exports.GameLogic.prototype.onTimer = function()
+exports.GameLogic.prototype.OnTimer = function()
 {
   var msg = new Msg();
   msg.m_cmdID = 102;
   msg.m_playerList = this.m_playerList;
-  for (var player in this.m_playerList)
+  for (var l in this.m_playerList)
   {
-      msg.m_sockKey = player.sockKey;
-      this.m_clientMananger.SendData(msg);
+      var player = this.m_playerList[l];
+      if(player)
+      {
+        msg.m_sockKey = player.m_sockKey;
+        this.m_clientMananger.SendData(msg);
+      }
   }   
 }
 

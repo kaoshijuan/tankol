@@ -10,7 +10,7 @@ var BulletSpeed:int;
 var FireAudioObj:GameObject;
 var HitAudioObj:GameObject;
 
-public var m_id = 0;
+public var m_uid = '';
 private var lastCheck = 0;
 private var m_sName = "";
 
@@ -29,7 +29,7 @@ function Start () {
 function Init(tankmodel:TankModel) {
 	this.transform.eulerAngles = tankmodel.m_eulerAngle;
 	this.transform.rigidbody.velocity = tankmodel.m_velocity;
-	this.m_id = tankmodel.m_id;
+	this.m_uid = tankmodel.m_uid;
 }
 
 function Update () {
@@ -135,14 +135,14 @@ function CheckTimer()
 function UpdatePosVelocity()
 {
 	var netManager:NetManager = GameObject.FindGameObjectWithTag('GameController').GetComponent("NetManager") as NetManager;
-//	netManager.UpdatePosVelocity(m_id,this.rigidbody.transform.position,this.rigidbody.transform.eulerAngles,this.rigidbody.velocity);
+	netManager.UpdatePosVelocity(m_uid,this.rigidbody.transform.position,this.rigidbody.transform.eulerAngles,this.rigidbody.velocity);
 
 }
 
 function Fire(pos:Vector3, rotation:Quaternion, speed:Vector3)
 {
 	var netManager:NetManager = GameObject.FindGameObjectWithTag('GameController').GetComponent("NetManager") as NetManager;
-//	netManager.Fire(m_id,pos,rotation,speed);
+	netManager.Fire(m_uid,pos,rotation,speed);
 }
 
 function SetName(name:String)

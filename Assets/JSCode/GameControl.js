@@ -5,7 +5,7 @@ public var enemyPre:EnemyTank;
 public var bulletPre:Rigidbody;
 
 private var lastCheck = 0;
-private var m_id = 0;
+private var m_uid = 'hello2';
 private var connected_fail = false;
 
 function Start () {
@@ -16,26 +16,11 @@ function Start () {
 		Debug.LogError('net mananger init failed');
 		connected_fail = true;
 	}else{
-//		netManager.Login();
-		Login();
+		netManager.Login('hello2','world');
+//		Login();
 	}
 }
 
-function Login()
-{
-	var msg = '{"m_uid":"ttrr","m_cmdID":1}';
-	
-	SendData(msg);
-}
-
-function SendData(msg)
-{
-	var str = msg.ToString();
-	var abyBuffer = System.Text.Encoding.UTF8.GetBytes(str);
-	
-	var netManager = GetComponent("NetManager") as NetManager;
-	netManager.SendData(abyBuffer);
-}
 
 function OnClose()
 {
@@ -52,7 +37,12 @@ function Update () {
 	netManager.GetResponse();
 }
 
-
+function OnApplicationQuit()
+{
+	Debug.Log('Application quit now');
+	var netManager = GetComponent("NetManager") as NetManager;
+	netManager.Exit(m_uid);
+}
 function CheckTimer()
 {
 	if (Time.realtimeSinceStartup - lastCheck > 1)
@@ -66,20 +56,18 @@ function OnMsg(abyBuffer)
 	
 	
 	
-	var str = System.Text.Encoding.UTF8.GetString(abyBuffer);
+	var cmdID = System.BitConverter.ToInt32(abyBuffer,0);
 	
-	var msg:json = json.fromString(str);
-	var cmdID = 0;
 	switch(cmdID)
 	{
 		case 101:
-			OnLoginResponse(msg);
+			OnLoginResponse(abyBuffer);
 			break;
 		case 102:
-			OnBroadCastStatus(msg);
+			OnBroadCastStatus(abyBuffer);
 			break;
 		case 103:
-			OnBroadCastFire(msg);
+			OnBroadCastFire(abyBuffer);
 			break;
 		default:
 			break;
@@ -87,37 +75,30 @@ function OnMsg(abyBuffer)
 	
 }
 
-function OnLoginResponse(msg: json)
+function OnLoginResponse(abyBuffer)
 {
-/*	var uid = msg['m_uid'];
-	var myTankID = System.BitConverter.ToInt32(abyBuffer,8);
-	Debug.Log('OnLoginResponse, my tank id : ' + myTankID);
-	m_id = myTankID;
-	
-	var tankCount = System.BitConverter.ToInt32(abyBuffer,12);
-	Debug.Log('OnLoginResponse, get tank count :' + tankCount);
-	
-	var index = 16;
-	for (var i = 0; i< tankCount; ++i)
+	var playerCount = System.BitConverter.ToInt32(abyBuffer,4);
+	var index = 8;
+	for(var i = 0 ; i < playerCount ; ++i)
 	{
 		var t:TankModel = new TankModel();
 		index += t.Decode(abyBuffer,index);
-		CreateTank(t,myTankID);
-	}*/ 
+		CreateTank(t);
+	}
 }
 
 function OnBroadCastStatus(abyBuffer)
 {
 		
-	var tankCount = System.BitConverter.ToInt32(abyBuffer,8);
+	var tankCount = System.BitConverter.ToInt32(abyBuffer,4);
 	
-	var index = 12;
+	var index = 8;
 	
 	for (var i = 0; i< tankCount; ++i)
 	{
 		var tank:TankModel = new TankModel();
 		index += tank.Decode(abyBuffer,index);
-		if(tank.m_id != m_id)
+		if(tank.m_uid != m_uid)
 		{
 			UpdateTank(tank);
 		}
@@ -126,13 +107,13 @@ function OnBroadCastStatus(abyBuffer)
 
 function OnBroadCastFire(abyBuffer)
 {
-	var tankID = System.BitConverter.ToInt32(abyBuffer,8);
-	
 	var pos:Vector3;
 	var rotation:Quaternion;
 	var speed:Vector3;
 	
-	var index = 12;
+	var index = 4;
+	
+		
 	pos.x = System.BitConverter.ToSingle(abyBuffer,index);
 	index += 4;
 	pos.y = System.BitConverter.ToSingle(abyBuffer,index);
@@ -162,19 +143,22 @@ function OnBroadCastFire(abyBuffer)
 	
 	
 }
-function CreateTank(tankmodel:TankModel,mytankid)
+function CreateTank(tankmodel:TankModel)
 {
 	var pos:Vector3;
 	var rot:Quaternion;
 	pos = tankmodel.m_pos; 
 	
-	if(mytankid != tankmodel.m_id){
+	if(m_uid != tankmodel.m_uid){
 		var enemy = Instantiate(enemyPre,pos,rot);
 		enemy.Init(tankmodel);
 	}else{
-		var player = Instantiate(playerPre,pos,rot);
-		player.Init(tankmodel);
-		m_id = tankmodel.m_id;
+		var obj = GameObject.FindGameObjectWithTag('Player');
+		if(obj == null)
+		{
+			var player = Instantiate(playerPre,pos,rot);
+			player.Init(tankmodel);
+		}
 	}
 }
 
@@ -187,7 +171,7 @@ function UpdateTank(tankmodel:TankModel)
 		for (var l in list)
 		{
 			var enemyTank:EnemyTank = l.GetComponent('EnemyTank') as EnemyTank;
-			if(enemyTank.m_id == tankmodel.m_id)
+			if(enemyTank.m_uid == tankmodel.m_uid)
 			{
 				enemyTank.UpdateStatus(tankmodel);
 				founded = true;//found
@@ -198,9 +182,9 @@ function UpdateTank(tankmodel:TankModel)
 	//服务器下发的数据里有，但是本地没有找到相应的ID，那么创建出来。
 	if(founded == false)
 	{
-		if(tankmodel != m_id)
+		if(tankmodel.m_uid != m_uid)
 		{
-			CreateTank(tankmodel,m_id);
+			CreateTank(tankmodel);
 		}
 	}
 	

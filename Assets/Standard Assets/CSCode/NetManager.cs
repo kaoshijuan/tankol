@@ -18,39 +18,67 @@ public class NetManager:MonoBehaviour{
 	public int Init()
 	{
 		m_stTCPConn = new CTCPConn();
-		//int iResult = m_stTCPConn.ConnectTo("172.25.42.46",80);
-		int iResult = m_stTCPConn.ConnectTo("42.96.139.24",80);
+		int iResult = m_stTCPConn.ConnectTo("172.25.42.46",80);
+		//int iResult = m_stTCPConn.ConnectTo("42.96.139.24",80);
 		return iResult;	
 	}
-	public void SendData(byte [] buffer)
+	
+
+	public void Login(string m_uid,string m_name)
 	{
+		int index = 0;
+		
 		byte []abyBuffer = new byte[1024];
-		Array.Copy(System.BitConverter.GetBytes((int)buffer.GetLength(0) + 4),0,abyBuffer,0,sizeof(int));//Len
-		Array.Copy(buffer,0,abyBuffer,4,buffer.GetLength(0));
-		m_stTCPConn.SendOneCode(abyBuffer,(uint)buffer.GetLength(0) + 4);	
-	}
-	/*
-	public void Login()
-	{
-		byte []abyBuffer = new byte[8];
-		Array.Copy(System.BitConverter.GetBytes((int)8),0,abyBuffer,0,4);//Len
-		Array.Copy(System.BitConverter.GetBytes((int)1),0,abyBuffer,4,4);//CmdID
-		m_stTCPConn.SendOneCode(abyBuffer,8);
+		Array.Copy(System.BitConverter.GetBytes((int)0),0,abyBuffer,index,sizeof(int));//Len
+		index += sizeof(int);
+		
+		System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding(true, true);
+		byte [] uidbuffer = enc.GetBytes(m_uid);
+		
+		Array.Copy(System.BitConverter.GetBytes(uidbuffer.GetLength(0)),0,abyBuffer,index,sizeof(int)); //uidlen
+		index += sizeof(int);
+		
+		Array.Copy(uidbuffer,0,abyBuffer,index,uidbuffer.GetLength(0));
+		index += uidbuffer.GetLength(0);
+		
+		Array.Copy(System.BitConverter.GetBytes((int)1),0,abyBuffer,index ,sizeof(int));//CmdID
+		index += sizeof(int);
+		
+		System.Text.UTF8Encoding enc_name = new System.Text.UTF8Encoding(true, true);
+		byte [] namebuffer = enc_name.GetBytes(m_name);
+
+		Array.Copy(System.BitConverter.GetBytes(namebuffer.GetLength(0)),0,abyBuffer,index,sizeof(int)); //namelen
+		index += sizeof(int);
+		
+		Array.Copy(namebuffer,0,abyBuffer,index,namebuffer.GetLength(0));
+		index += namebuffer.GetLength(0);		
+
+		Array.Copy(System.BitConverter.GetBytes(index),0,abyBuffer,0,sizeof(int));//Len rewrite back
+		
+		m_stTCPConn.SendOneCode(abyBuffer,(uint)index);
 	}
 	
-	public void UpdatePosVelocity(int m_id,Vector3 pos,Vector3 eulerAngle, Vector3 velocity)
+	public void UpdatePosVelocity(string m_uid,Vector3 pos,Vector3 eulerAngle, Vector3 velocity)
 	{
 		byte []abyBuffer = new byte[1024];
 		
 		int index = 0;
 		Array.Copy(System.BitConverter.GetBytes((int)0),0,abyBuffer,index,sizeof(int));//Len
 		index += sizeof(int);
+		
+		System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding(true, true);
+		byte [] uidbuffer = enc.GetBytes(m_uid);
+		
+		Array.Copy(System.BitConverter.GetBytes(uidbuffer.GetLength(0)),0,abyBuffer,index,sizeof(int)); //uidlen
+		index += sizeof(int);
+		
+		Array.Copy(uidbuffer,0,abyBuffer,index,uidbuffer.GetLength(0));
+		index += uidbuffer.GetLength(0);
+		
+		
 		Array.Copy(System.BitConverter.GetBytes((int)2),0,abyBuffer,index,sizeof(int));//CmdID
 		index += sizeof(int);
-		
-		Array.Copy(System.BitConverter.GetBytes(m_id),0,abyBuffer,index,sizeof(int));//CmdID
-		index += sizeof(int);
-		
+
 		Array.Copy(System.BitConverter.GetBytes(pos.x),0,abyBuffer,index,sizeof(float));
 		index += sizeof(float);
 		Array.Copy(System.BitConverter.GetBytes(pos.y),0,abyBuffer,index,sizeof(float));
@@ -78,17 +106,26 @@ public class NetManager:MonoBehaviour{
 		m_stTCPConn.SendOneCode(abyBuffer,(uint)index);
 	}
 	
-	public void Fire(int m_id,Vector3 pos, Quaternion rotation, Vector3 speed)
+	public void Fire(string m_uid,Vector3 pos, Quaternion rotation, Vector3 speed)
 	{
 		byte []abyBuffer = new byte[1024];
 		
 		int index = 0;
 		Array.Copy(System.BitConverter.GetBytes((int)0),0,abyBuffer,index,sizeof(int));//Len
 		index += sizeof(int);
+
+		System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding(true, true);
+		byte [] uidbuffer = enc.GetBytes(m_uid);
+		
+		Array.Copy(System.BitConverter.GetBytes(uidbuffer.GetLength(0)),0,abyBuffer,index,sizeof(int)); //uidlen
+		index += sizeof(int);
+		
+		Array.Copy(uidbuffer,0,abyBuffer,index,uidbuffer.GetLength(0));
+		index += uidbuffer.GetLength(0);		
+		
 		Array.Copy(System.BitConverter.GetBytes((int)3),0,abyBuffer,index,sizeof(int));//CmdID
 		index += sizeof(int);
-		Array.Copy(System.BitConverter.GetBytes(m_id),0,abyBuffer,index,sizeof(int));//id
-		index += sizeof(int);
+
 		
 		Array.Copy(System.BitConverter.GetBytes(pos.x),0,abyBuffer,index,sizeof(float));
 		index += sizeof(float);
@@ -124,11 +161,31 @@ public class NetManager:MonoBehaviour{
 		
 	}
 	
-	public void Exit()
+	public void Exit(string m_uid)
 	{
+		int index = 0;
 		
+		byte []abyBuffer = new byte[1024];
+		Array.Copy(System.BitConverter.GetBytes((int)0),0,abyBuffer,index,sizeof(int));//Len
+		index += sizeof(int);
+		
+		System.Text.UTF8Encoding enc = new System.Text.UTF8Encoding(true, true);
+		byte [] uidbuffer = enc.GetBytes(m_uid);
+		
+		Array.Copy(System.BitConverter.GetBytes(uidbuffer.GetLength(0)),0,abyBuffer,index,sizeof(int)); //uidlen
+		index += sizeof(int);
+		
+		Array.Copy(uidbuffer,0,abyBuffer,index,uidbuffer.GetLength(0));
+		index += uidbuffer.GetLength(0);
+		
+		Array.Copy(System.BitConverter.GetBytes((int)5),0,abyBuffer,index ,sizeof(int));//CmdID
+		index += sizeof(int);
+		
+		Array.Copy(System.BitConverter.GetBytes(index),0,abyBuffer,0,sizeof(int));//Len rewrite back
+		
+		m_stTCPConn.SendOneCode(abyBuffer,(uint)index);		
 	}
-	*/
+	
 	public void GetResponse()
 	{
 		if(m_stTCPConn.CheckConn() == false)

@@ -1,6 +1,12 @@
 var GameLogic = require('./gamelogic.js').GameLogic;
 var Msg = require('./protocol.js').Msg;
+
 var gameLogic = new GameLogic();
+
+function OnTimer(){
+	gameLogic.OnTimer.call(gameLogic);
+}
+setInterval(OnTimer,200);
 
 exports.ClientManager = function()
 {
@@ -20,7 +26,7 @@ exports.ClientManager.prototype.OnConnect = function (socket)
 
 exports.ClientManager.prototype.OnClose = function (socket)
 {
-	var key  = socket.remoteAddress+':'+socket.remotePort;
+	var key  = socket._peername.address+':'+socket._peername.port;
 
 	delete this.socketList[key];
 	
@@ -81,13 +87,17 @@ exports.ClientManager.prototype.OnData = function(socket,data)
 exports.ClientManager.prototype.SendData = function (msg)
 {
 	var sockKey = msg.m_sockKey;
-	var socket = this.socketList[sockKey].socket;
-	if(socket != null && socket != undefined)
+	if(this.socketList[sockKey])
 	{
-		var data = msg.Encode();
-		var buff = new Buffer(4);
-		buff.writeInt32LE(data.length+4,0);
-		socket.write(Buffer.concat([buff,data]));
+		var socket = this.socketList[sockKey].socket;
+		if(socket)
+		{
+			var data = msg.Encode();
+			var buff = new Buffer(4);
+			buff.writeInt32LE(data.length+4,0);
+			socket.write(Buffer.concat([buff,data]));
+		}
 	}
+
 }
 

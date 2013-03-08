@@ -5,7 +5,7 @@ var lastCheck = 0;
 
 var FirePoint:Transform;
 var Bullet:Rigidbody;
-var m_id = 0;
+var m_uid = '';
 private var m_sName = "";
 private var lastUpdateTime = 0;
 
@@ -29,7 +29,7 @@ function Init(tankmodel:TankModel)
 {
 	this.transform.eulerAngles = tankmodel.m_eulerAngle;
 	this.transform.rigidbody.velocity = tankmodel.m_velocity;
-	this.m_id = tankmodel.m_id;
+	this.m_uid = tankmodel.m_uid;
 }
 
 function Start()

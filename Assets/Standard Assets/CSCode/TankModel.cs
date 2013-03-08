@@ -4,7 +4,7 @@ using System.Collections;
 
 public class TankModel {
 	
-	public int m_id;
+	public string m_uid;
 	public int m_iLevel;
 	public int m_iReserve1;
 	public int m_iReserve2;
@@ -16,7 +16,7 @@ public class TankModel {
 	public string m_name;
 	
 	public int Encode(ref byte [] abyBuffer, int index)
-	{
+	{/*
 		int temp = index;
 		Array.Copy(System.BitConverter.GetBytes(m_id),0,abyBuffer,index,sizeof(int));
 		index += sizeof(int);
@@ -54,15 +54,20 @@ public class TankModel {
 		Array.Copy(System.BitConverter.GetBytes(m_iReserve4),0,abyBuffer,index,sizeof(int));
 		index += sizeof(int);
 		
-		return index - temp;
+		return index - temp;*/
+		return 0;
 	}
 	
 	public int Decode(byte[] abyBuffer,int index)
 	{
 		
 		int temp = index;
-		m_id = System.BitConverter.ToInt32(abyBuffer,index);
+		
+		int uidLen = System.BitConverter.ToInt32(abyBuffer,index);
 		index += sizeof(int);
+		
+		m_uid = System.Text.Encoding.UTF8.GetString(abyBuffer,index,uidLen);	
+		index += uidLen;
 		
 		m_pos.x = System.BitConverter.ToSingle(abyBuffer,index);
 		index += sizeof(float);
@@ -96,6 +101,13 @@ public class TankModel {
 		index += sizeof(int);
 		m_iReserve4 = System.BitConverter.ToInt32(abyBuffer,index);
 		index += sizeof(int);
+		
+		
+		int nameLen = System.BitConverter.ToInt32(abyBuffer,index);
+		index += sizeof(int);
+		
+		m_name = System.Text.Encoding.UTF8.GetString(abyBuffer,index,nameLen);
+		index +=nameLen;
 		
 		return index - temp;
 		
