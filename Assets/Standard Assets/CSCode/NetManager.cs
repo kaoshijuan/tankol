@@ -18,8 +18,8 @@ public class NetManager:MonoBehaviour{
 	public int Init()
 	{
 		m_stTCPConn = new CTCPConn();
-		//int iResult = m_stTCPConn.ConnectTo("172.25.42.46",80);
-		int iResult = m_stTCPConn.ConnectTo("42.96.139.24",80);
+		int iResult = m_stTCPConn.ConnectTo("172.25.42.46",80);
+		//int iResult = m_stTCPConn.ConnectTo("42.96.139.24",80);
 		return iResult;	
 	}
 	

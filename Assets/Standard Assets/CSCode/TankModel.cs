@@ -6,7 +6,7 @@ public class TankModel {
 	
 	public string m_uid;
 	public int m_iLevel;
-	public int m_iReserve1;
+	public int m_iShootCount;
 	public int m_iReserve2;
 	public int m_iReserve3;
 	public int m_iReserve4;
@@ -93,7 +93,7 @@ public class TankModel {
 		m_iLevel = System.BitConverter.ToInt32(abyBuffer,index);
 		index += sizeof(int);
 		
-		m_iReserve1 = System.BitConverter.ToInt32(abyBuffer,index);
+		m_iShootCount = System.BitConverter.ToInt32(abyBuffer,index);
 		index += sizeof(int);
 		m_iReserve2 = System.BitConverter.ToInt32(abyBuffer,index);
 		index += sizeof(int);

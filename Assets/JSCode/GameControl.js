@@ -11,9 +11,10 @@ private var connected_fail = false;
 private var gameGUI : GameGUI;
 
 function Start () {
-	var gameGUIObject : GameObject = GameObject.Find("GameGUI");
-	gameGUI = gameGUIObject.GetComponent(GameGUI);
-	m_uid = gameGUI.m_userName;
+	var roomGUIObject : GameObject = GameObject.Find("RoomGUI");
+	roomGUI = roomGUIObject.GetComponent(RoomGUI);
+	roomGUIObject.AddComponent('NetManager');
+	m_uid = roomGUI.m_userName;
 	m_name = m_uid;
 	var netManager = GetComponent("NetManager") as NetManager;
 	if(netManager.Init()<0)

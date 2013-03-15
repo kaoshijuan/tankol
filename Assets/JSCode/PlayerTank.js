@@ -12,7 +12,8 @@ var HitAudioObj:GameObject;
 
 public var m_uid = '';
 private var lastCheck = 0;
-private var m_sName = "";
+public var m_sName = "";
+public var m_iShootCount = 0;
 
 function Start () {
 	Energy=10;
@@ -30,6 +31,8 @@ function Init(tankmodel:TankModel) {
 	this.transform.eulerAngles = tankmodel.m_eulerAngle;
 	this.transform.rigidbody.velocity = tankmodel.m_velocity;
 	this.m_uid = tankmodel.m_uid;
+	this.m_sName = tankmodel.m_name;
+	this.m_iShootCount = tankmodel.m_iShootCount;
 }
 
 function Update () {

@@ -6,7 +6,9 @@ var lastCheck = 0;
 var FirePoint:Transform;
 var Bullet:Rigidbody;
 var m_uid = '';
-private var m_name = "";
+public var m_sName = "";
+public var m_iShootCount = 0;
+
 private var lastUpdateTime = 0;
 
 function OnCollisionEnter(obj:Collision)
@@ -30,7 +32,7 @@ function Init(tankmodel:TankModel)
 	this.transform.eulerAngles = tankmodel.m_eulerAngle;
 	this.transform.rigidbody.velocity = tankmodel.m_velocity;
 	this.m_uid = tankmodel.m_uid;
-	this.m_name = tankmodel.m_name;
+	this.m_sName = tankmodel.m_name;
 }
 
 function Start()
@@ -50,7 +52,7 @@ function OnGUI()
 	var screenPos : Vector3 = Camera.main.WorldToScreenPoint(this.transform.position);
 	if(screenPos.z > 0)
 	{
-		GUI.Box(Rect(screenPos.x - 25,Screen.height - screenPos.y - 30,50,20),this.m_name);
+		GUI.Box(Rect(screenPos.x - 25,Screen.height - screenPos.y - 30,60,30),this.m_sName);
 	}
 }
 function CheckTimer()
@@ -74,5 +76,6 @@ function UpdateStatus(tankmodel:TankModel)
 	this.rigidbody.velocity.x = (tankmodel.m_pos.x - this.rigidbody.position.x)/0.5;
 	this.rigidbody.velocity.y = (tankmodel.m_pos.y - this.rigidbody.position.y)/0.5;
 	this.rigidbody.velocity.z = (tankmodel.m_pos.z - this.rigidbody.position.z)/0.5;
+	this.m_iShootCount = tankmodel.m_iShootCount;
 }
 

@@ -2,18 +2,16 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\JSCode\GameControl.js">
     <Files>
-      <File FileName="Assets\Standard Assets\CSCode\NetManager.cs" Line="26" Column="2" />
-      <File FileName="Assets\Standard Assets\CSCode\TcpConn.cs" Line="1" Column="1" />
-      <File FileName="Assets\Standard Assets\CSCode\TankModel.cs" Line="70" Column="19" />
-      <File FileName="Assets\JSCode\GameControl.js" Line="6" Column="1" />
-      <File FileName="Assets\JSCode\EnemyTank.js" Line="1" Column="1" />
-      <File FileName="Assets\JSCode\PlayerTank.js" Line="1" Column="1" />
+      <File FileName="Assets\Standard Assets\CSCode\RoomGUI.cs" Line="18" Column="3" />
+      <File FileName="Assets\Standard Assets\CSCode\NetManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\Standard Assets\CSCode\TankModel.cs" Line="1" Column="1" />
+      <File FileName="Assets\JSCode\GameGUI.js" Line="19" Column="40" />
+      <File FileName="Assets\JSCode\PlayerTank.js" Line="33" Column="31" />
+      <File FileName="Assets\JSCode\GameControl.js" Line="20" Column="25" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="D:\source\test\tankol\Assets\JSCode\GameControl.js" line="74" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />
 </Properties>
