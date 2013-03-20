@@ -44,11 +44,15 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Standard Assets\CSCode\GameGUI.cs" />
      <Compile Include="Assets\Standard Assets\CSCode\NetManager.cs" />
      <Compile Include="Assets\Standard Assets\CSCode\RoomGUI.cs" />
      <Compile Include="Assets\Standard Assets\CSCode\TankModel.cs" />
      <Compile Include="Assets\Standard Assets\CSCode\TcpConn.cs" />
      <Compile Include="Assets\Standard Assets\Character Controllers\Sources\Scripts\MouseLook.cs" />
+     <Compile Include="Assets\Standard Assets\Scripts\General Scripts\ActivateTrigger.cs" />
+     <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\CombineChildren.cs" />
+     <Compile Include="Assets\Standard Assets\Scripts\Utility Scripts\MeshCombineUtility.cs" />
      <Compile Include="Assets\Standard Assets\Terrain Assets\Scripts\General Scripts\ActivateTrigger.cs" />
      <Compile Include="Assets\Standard Assets\Terrain Assets\Scripts\Utility Scripts\CombineChildren.cs" />
      <Compile Include="Assets\Standard Assets\Terrain Assets\Scripts\Utility Scripts\MeshCombineUtility.cs" />
